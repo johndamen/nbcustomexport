@@ -6,11 +6,13 @@ define([
     Jupyter
 ) {
     function load_ipython_extension() {
+
+        // add formats to menu
         function add_custom_formats(items, state){
-            console.log('items', items)
+            // get menu element as parent of existing
             var $dlMenu = $("#download_html").parent();
+            // create new elements with click callback
             items.map(function(format){
-                console.log('format', format)
                 $("<li/>", {"id": "download_" + format.key})
                     .append(
                         $("<a/>", {"href": "#"})
@@ -20,7 +22,6 @@ define([
                 .appendTo($dlMenu)
             })
         }
-
         $.get(Jupyter.notebook.base_url + "nbcustomexport/list", add_custom_formats);
     }
 

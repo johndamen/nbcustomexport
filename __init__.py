@@ -5,7 +5,7 @@ from notebook.utils import url_path_join
 from notebook.base.handlers import IPythonHandler
 import warnings
 import json
-from traitlets import Unicode
+
 
 __version_info__ = (0, 1, 1)
 __version__ = '.'.join(map(str, __version_info__))
@@ -27,6 +27,7 @@ def _jupyter_server_extension_paths():
 
 
 def make_exporter(tpl):
+    """create an exporter class for a given template file"""
     class Exporter(HTMLExporter):
         def __init__(self, *args, **kwargs):
             kwargs.update(template_file=tpl,
@@ -35,8 +36,9 @@ def make_exporter(tpl):
     return Exporter
 
 
-
 class CustomConvertersHandler(IPythonHandler):
+
+    """serve template data as json"""
 
     templates = dict()
 
@@ -50,6 +52,8 @@ class CustomConvertersHandler(IPythonHandler):
 
 def load_jupyter_server_extension(nbapp):
     nbapp.log.info("nbcustomexport HTML export ENABLED")
+
+    # search templates
     templates = dict()
     for f in os.listdir(TPL_DIR):
         name, ext = os.path.splitext(f)
@@ -58,10 +62,14 @@ def load_jupyter_server_extension(nbapp):
                 warnings.warn('template {} already exists'.format(name), UserWarning)
                 continue
             templates[name] = make_exporter(name)
+
+    # add templates to nbconvert exporters
     exporter_map.update(templates)
 
+    # add templates to handler
     CustomConvertersHandler.templates = templates
 
+    # setup handler for serving template data
     web_app = nbapp.web_app
     host_pattern = '.*$'
     route_pattern = url_path_join(web_app.settings['base_url'], '/nbcustomexport/list')
