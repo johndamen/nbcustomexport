@@ -8,11 +8,11 @@ define([
     function load_ipython_extension() {
 
         // add formats to menu
-        function add_custom_formats(items, state){
+        function add_custom_formats(data){
             // get menu element as parent of existing
             var $dlMenu = $("#download_html").parent();
             // create new elements with click callback
-            items.map(function(format){
+            data.templates.map(function(format){
                 $("<li/>", {"id": "download_" + format.key})
                     .append(
                         $("<a/>", {"href": "#"})
