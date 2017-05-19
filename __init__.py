@@ -46,8 +46,8 @@ class CustomConvertersHandler(IPythonHandler):
         data = []
         for k, v in sorted(self.templates.items()):
             data.append(dict(key=k, label='Custom template {}'.format(k)))
-        self.set_header('Content-type', 'application/json; charset=UTF-8')
-        self.finish(json.dumps(data))
+        # self.set_header('Content-type', 'application/json')
+        self.finish(dict(templates=data))
 
 
 def load_jupyter_server_extension(nbapp):
@@ -74,4 +74,3 @@ def load_jupyter_server_extension(nbapp):
     host_pattern = '.*$'
     route_pattern = url_path_join(web_app.settings['base_url'], '/nbcustomexport/list')
     web_app.add_handlers(host_pattern, [(route_pattern, CustomConvertersHandler)])
-
